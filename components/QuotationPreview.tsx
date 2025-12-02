@@ -134,38 +134,36 @@ const QuotationPreview: React.FC<Props> = ({ data }) => {
               <th className="py-3 px-4 text-right rounded-tr-lg w-32">{t.amount}</th>
             </tr>
           </thead>
-          <tbody className="text-gray-700 text-sm">
-            {sections.map((section, sIndex) => {
-                let sectionTotal = 0;
-                return (
-                    <React.Fragment key={section.id}>
-                        <tr className="bg-gray-100 font-bold break-inside-avoid">
-                            <td className="py-2 px-2 text-center">{section.romanIndex}</td>
-                            <td className="py-2 px-4" colSpan={5}>{section.title}</td>
-                        </tr>
-                        {section.items.map((item, iIndex) => {
-                            const lineTotal = item.quantity * item.price;
-                            sectionTotal += lineTotal;
-                            return (
-                                <tr key={item.id} className="border-b border-gray-200 break-inside-avoid hover:bg-gray-50">
-                                    <td className="py-3 px-2 text-center align-top pt-4">
-                                        {sIndex + 1}.{iIndex + 1}
-                                    </td>
-                                    <td className="py-3 px-4 align-top">
-                                        <p className="font-bold">{item.name}</p>
-                                        <p className="text-xs text-gray-500 mt-1 whitespace-pre-line leading-relaxed">{item.description}</p>
-                                    </td>
-                                    <td className="py-3 px-2 text-center align-top pt-4">{item.unit}</td>
-                                    <td className="py-3 px-2 text-center align-top pt-4">{item.quantity}</td>
-                                    <td className="py-3 px-4 text-right align-top pt-4">{formatCurrency(item.price)}</td>
-                                    <td className="py-3 px-4 text-right font-medium align-top pt-4">{formatCurrency(lineTotal)}</td>
-                                </tr>
-                            );
-                        })}
-                    </React.Fragment>
-                );
-            })}
-          </tbody>
+          {sections.map((section, sIndex) => {
+              let sectionTotal = 0;
+              return (
+                  <tbody key={section.id} className="text-gray-700 text-sm break-inside-avoid">
+                      <tr className="bg-gray-100 font-bold">
+                          <td className="py-2 px-2 text-center">{section.romanIndex}</td>
+                          <td className="py-2 px-4" colSpan={5}>{section.title}</td>
+                      </tr>
+                      {section.items.map((item, iIndex) => {
+                          const lineTotal = item.quantity * item.price;
+                          sectionTotal += lineTotal;
+                          return (
+                              <tr key={item.id} className="border-b border-gray-200 hover:bg-gray-50">
+                                  <td className="py-3 px-2 text-center align-top pt-4">
+                                      {sIndex + 1}.{iIndex + 1}
+                                  </td>
+                                  <td className="py-3 px-4 align-top">
+                                      <p className="font-bold">{item.name}</p>
+                                      <p className="text-xs text-gray-500 mt-1 whitespace-pre-line leading-relaxed">{item.description}</p>
+                                  </td>
+                                  <td className="py-3 px-2 text-center align-top pt-4">{item.unit}</td>
+                                  <td className="py-3 px-2 text-center align-top pt-4">{item.quantity}</td>
+                                  <td className="py-3 px-4 text-right align-top pt-4">{formatCurrency(item.price)}</td>
+                                  <td className="py-3 px-4 text-right font-medium align-top pt-4">{formatCurrency(lineTotal)}</td>
+                              </tr>
+                          );
+                      })}
+                  </tbody>
+              );
+          })}
         </table>
       </div>
 
@@ -208,13 +206,13 @@ const QuotationPreview: React.FC<Props> = ({ data }) => {
       </div>
 
       {/* Signature */}
-      <div className="flex justify-between items-end mt-12 px-8 break-inside-avoid">
-        <div className="text-center">
-          <p className="font-bold text-gray-800 mb-20">{t.clientRep}</p>
+      <div className="flex justify-between items-start mt-12 px-8 break-inside-avoid">
+        <div className="text-center w-1/2">
+          <p className="font-bold text-gray-800 uppercase mb-20">{t.clientRep}</p>
           <p className="text-sm text-gray-500">{t.signName}</p>
         </div>
-        <div className="text-center">
-          <p className="font-bold text-gray-800 mb-4">{t.companyRep} {company.name}</p>
+        <div className="text-center w-1/2">
+          <p className="font-bold text-gray-800 uppercase mb-4">{t.companyRep} {company.name}</p>
           <div className="h-20 w-32 mx-auto mb-2 flex items-center justify-center text-gray-300 border border-dashed rounded">
              <span className="text-xs">{t.signSeal}</span>
           </div>
