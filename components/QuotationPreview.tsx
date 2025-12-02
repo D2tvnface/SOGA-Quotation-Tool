@@ -1,0 +1,168 @@
+import React, { useMemo } from 'react';
+import { QuotationData } from '../types';
+import { formatCurrency, readNumberToWords } from '../utils';
+
+interface Props {
+  data: QuotationData;
+}
+
+const QuotationPreview: React.FC<Props> = ({ data }) => {
+  const { company, customer, meta, sections, vatRate, terms } = data;
+
+  const totals = useMemo(() => {
+    let subtotal = 0;
+    sections.forEach(section => {
+      section.items.forEach(item => {
+        subtotal += item.quantity * item.price;
+      });
+    });
+    const vatAmount = Math.round(subtotal * (vatRate / 100));
+    const total = subtotal + vatAmount;
+    return { subtotal, vatAmount, total };
+  }, [sections, vatRate]);
+
+  return (
+    <div className="max-w-[210mm] mx-auto bg-white p-8 md:p-12 shadow-lg rounded-lg relative overflow-hidden print-container min-h-[297mm]">
+      
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start mb-8 border-b-2 border-gray-200 pb-6">
+        <div className="w-full md:w-1/2 mb-4 md:mb-0">
+          <img src={company.logoUrl} alt="Company Logo" className="h-16 mb-4 object-contain" />
+          <h1 className="text-xl font-bold text-gray-800 uppercase">{company.name}</h1>
+          <p className="text-xs text-gray-500 mt-2 italic pr-4">
+            "Sứ mệnh của chúng tôi là đánh thức tiềm năng ẩn giấu trong mỗi website. Với kinh nghiệm và công nghệ, chúng tôi biến tài sản số thành cỗ máy sinh lời."
+          </p>
+          
+          <div className="mt-4 text-xs text-gray-600 space-y-1">
+            <p><i className="fas fa-map-marker-alt w-5 text-center inline-block"></i> {company.address}</p>
+            <p><i className="fas fa-phone w-5 text-center inline-block"></i> {company.phone}</p>
+            <p><i className="fas fa-envelope w-5 text-center inline-block"></i> {company.email}</p>
+            <p><i className="fas fa-id-card w-5 text-center inline-block"></i> MST: {company.taxId}</p>
+          </div>
+        </div>
+        
+        <div className="w-full md:w-1/2 text-right">
+          <h2 className="text-4xl font-bold text-gray-200 uppercase tracking-widest mb-2">Báo Giá</h2>
+          <div className="text-sm">
+            <p className="mb-1"><span className="font-bold text-gray-700">Số:</span> {meta.quoteNumber}</p>
+            <p className="mb-1"><span className="font-bold text-gray-700">Ngày:</span> {meta.date}</p>
+            <p className="mb-1"><span className="font-bold text-gray-700">Hiệu lực:</span> {meta.validityDays} ngày</p>
+          </div>
+          
+          <div className="mt-6 bg-gray-50 p-4 rounded text-left border-l-4 border-brand">
+            <p className="text-xs text-gray-500 uppercase font-bold mb-1">Khách hàng</p>
+            <h3 className="text-lg font-bold text-brand">{customer.companyName}</h3>
+            <p className="text-gray-700 text-sm">Người liên hệ: <span className="font-medium">{customer.contactPerson}</span></p>
+            <p className="text-gray-700 text-sm">Dự án: <span className="font-medium">{customer.projectName}</span></p>
+          </div>
+        </div>
+      </div>
+
+      {/* Content Table */}
+      <div className="mb-8">
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="bg-gray-800 text-white text-sm uppercase">
+              <th className="py-3 px-2 text-center rounded-tl-lg w-12">STT</th>
+              <th className="py-3 px-4 text-left">Hạng mục / Mô tả</th>
+              <th className="py-3 px-2 text-center w-20">ĐVT</th>
+              <th className="py-3 px-2 text-center w-16">SL</th>
+              <th className="py-3 px-4 text-right w-32">Đơn giá</th>
+              <th className="py-3 px-4 text-right rounded-tr-lg w-32">Thành tiền</th>
+            </tr>
+          </thead>
+          <tbody className="text-gray-700 text-sm">
+            {sections.map((section, sIndex) => {
+                let sectionTotal = 0;
+                return (
+                    <React.Fragment key={section.id}>
+                        <tr className="bg-gray-100 font-bold break-inside-avoid">
+                            <td className="py-2 px-2 text-center">{section.romanIndex}</td>
+                            <td className="py-2 px-4" colSpan={5}>{section.title}</td>
+                        </tr>
+                        {section.items.map((item, iIndex) => {
+                            const lineTotal = item.quantity * item.price;
+                            sectionTotal += lineTotal;
+                            return (
+                                <tr key={item.id} className="border-b border-gray-200 break-inside-avoid hover:bg-gray-50">
+                                    <td className="py-3 px-2 text-center align-top pt-4">
+                                        {sIndex + 1}.{iIndex + 1}
+                                    </td>
+                                    <td className="py-3 px-4 align-top">
+                                        <p className="font-bold">{item.name}</p>
+                                        <p className="text-xs text-gray-500 mt-1 whitespace-pre-line leading-relaxed">{item.description}</p>
+                                    </td>
+                                    <td className="py-3 px-2 text-center align-top pt-4">{item.unit}</td>
+                                    <td className="py-3 px-2 text-center align-top pt-4">{item.quantity}</td>
+                                    <td className="py-3 px-4 text-right align-top pt-4">{formatCurrency(item.price)}</td>
+                                    <td className="py-3 px-4 text-right font-medium align-top pt-4">{formatCurrency(lineTotal)}</td>
+                                </tr>
+                            );
+                        })}
+                    </React.Fragment>
+                );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Totals */}
+      <div className="flex justify-end mb-10 break-inside-avoid">
+        <div className="w-full md:w-2/3 lg:w-1/2">
+          <div className="flex justify-between mb-2 text-gray-600 text-sm">
+            <span>Cộng tiền hàng:</span>
+            <span className="font-medium">{formatCurrency(totals.subtotal)} VNĐ</span>
+          </div>
+          <div className="flex justify-between mb-2 text-gray-600 text-sm">
+            <span>Thuế VAT ({vatRate}%):</span>
+            <span className="font-medium">{formatCurrency(totals.vatAmount)} VNĐ</span>
+          </div>
+          <div className="border-t border-gray-300 my-2"></div>
+          <div className="flex justify-between items-center">
+            <span className="text-lg font-bold text-gray-800">TỔNG CỘNG:</span>
+            <span className="text-2xl font-bold text-brand">{formatCurrency(totals.total)} VNĐ</span>
+          </div>
+          <div className="text-right text-xs italic text-gray-500 mt-1">
+            (Bằng chữ: {readNumberToWords(totals.total)})
+          </div>
+        </div>
+      </div>
+
+      {/* Terms & Notes */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 break-inside-avoid">
+        <div>
+          <h4 className="font-bold text-gray-800 mb-2 uppercase text-sm border-b pb-1">Điều khoản thanh toán</h4>
+          <div className="text-sm text-gray-600 whitespace-pre-line">
+            {terms.payment}
+          </div>
+        </div>
+        <div>
+          <h4 className="font-bold text-gray-800 mb-2 uppercase text-sm border-b pb-1">Ghi chú</h4>
+          <div className="text-sm text-gray-600 whitespace-pre-line">
+            {terms.notes}
+          </div>
+        </div>
+      </div>
+
+      {/* Signature */}
+      <div className="flex justify-between items-end mt-12 px-8 break-inside-avoid">
+        <div className="text-center">
+          <p className="font-bold text-gray-800 mb-20">ĐẠI DIỆN KHÁCH HÀNG</p>
+          <p className="text-sm text-gray-500">(Ký, ghi rõ họ tên)</p>
+        </div>
+        <div className="text-center">
+          <p className="font-bold text-gray-800 mb-4">ĐẠI DIỆN {company.name}</p>
+          <div className="h-20 w-32 mx-auto mb-2 flex items-center justify-center text-gray-300 border border-dashed rounded">
+             <span className="text-xs">Chữ ký / Dấu</span>
+          </div>
+          <p className="font-bold text-brand uppercase">GIÁM ĐỐC</p>
+        </div>
+      </div>
+
+      {/* Footer Decoration */}
+      <div className="absolute bottom-0 left-0 w-full h-2 bg-gradient-to-r from-red-900 via-red-700 to-red-500"></div>
+    </div>
+  );
+};
+
+export default QuotationPreview;

@@ -1,0 +1,5 @@
+{
+  "name": "SOGA Quotation Tool",
+  "description": "A professional quotation generator tool for SOGA JSC with dynamic editing, automatic calculations, and PDF export capabilities.",
+  "requestFramePermissions": []
+}
