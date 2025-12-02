@@ -30,7 +30,7 @@ const DICTIONARY = {
     notes: 'Ghi chú',
     clientRep: 'ĐẠI DIỆN KHÁCH HÀNG',
     signName: '(Ký, ghi rõ họ tên)',
-    companyRep: 'ĐẠI DIỆN',
+    companyRep: 'CÔNG TY CỔ PHẦN SOGA',
     signSeal: 'Chữ ký / Dấu',
     director: 'GIÁM ĐỐC',
     mission: '"Sứ mệnh của chúng tôi là đánh thức tiềm năng ẩn giấu trong mỗi website. Với kinh nghiệm và công nghệ, chúng tôi biến tài sản số thành cỗ máy sinh lời."'
