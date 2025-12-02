@@ -82,11 +82,11 @@ const QuotationPreview: React.FC<Props> = ({ data }) => {
   }, [sections, vatRate]);
 
   return (
-    <div className="max-w-[210mm] mx-auto bg-white p-8 md:p-12 shadow-lg rounded-lg relative overflow-hidden print-container min-h-[297mm]">
+    <div className="max-w-[210mm] mx-auto bg-white p-8 md:p-12 shadow-lg rounded-lg relative overflow-hidden print:overflow-visible print:shadow-none print:rounded-none print-container min-h-[297mm]">
       
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start mb-8 border-b-2 border-gray-200 pb-6">
-        <div className="w-full md:w-1/2 mb-4 md:mb-0">
+      <div className="flex flex-col md:flex-row print:flex-row justify-between items-start mb-8 border-b-2 border-gray-200 pb-6">
+        <div className="w-full md:w-1/2 print:w-1/2 mb-4 md:mb-0">
           <img src={company.logoUrl} alt="Company Logo" className="h-16 mb-4 object-contain" />
           <h1 className="text-xl font-bold text-gray-800 uppercase">{company.name}</h1>
           <p className="text-xs text-gray-500 mt-2 italic pr-4">
@@ -104,7 +104,7 @@ const QuotationPreview: React.FC<Props> = ({ data }) => {
           </div>
         </div>
         
-        <div className="w-full md:w-1/2 text-right">
+        <div className="w-full md:w-1/2 print:w-1/2 text-right">
           <h2 className="text-4xl font-bold text-gray-200 uppercase tracking-widest mb-2">{t.title}</h2>
           <div className="text-sm">
             <p className="mb-1"><span className="font-bold text-gray-700">{t.number}:</span> {meta.quoteNumber}</p>
@@ -171,7 +171,7 @@ const QuotationPreview: React.FC<Props> = ({ data }) => {
 
       {/* Totals */}
       <div className="flex justify-end mb-10 break-inside-avoid">
-        <div className="w-full md:w-2/3 lg:w-1/2">
+        <div className="w-full md:w-2/3 lg:w-1/2 print:w-1/2">
           <div className="flex justify-between mb-2 text-gray-600 text-sm">
             <span>{t.subtotal}:</span>
             <span className="font-medium">{formatCurrency(totals.subtotal)} VNĐ</span>
@@ -192,7 +192,7 @@ const QuotationPreview: React.FC<Props> = ({ data }) => {
       </div>
 
       {/* Terms & Notes */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 break-inside-avoid">
+      <div className="grid grid-cols-1 md:grid-cols-2 print:grid-cols-2 gap-8 mb-12 break-inside-avoid">
         <div>
           <h4 className="font-bold text-gray-800 mb-2 uppercase text-sm border-b pb-1">{t.paymentTerms}</h4>
           <div className="text-sm text-gray-600 whitespace-pre-line">
@@ -223,7 +223,7 @@ const QuotationPreview: React.FC<Props> = ({ data }) => {
       </div>
 
       {/* Footer Decoration */}
-      <div className="absolute bottom-0 left-0 w-full h-2 bg-gradient-to-r from-red-900 via-red-700 to-red-500"></div>
+      <div className="absolute bottom-0 left-0 w-full h-2 bg-gradient-to-r from-red-900 via-red-700 to-red-500 print:bg-red-700"></div>
     </div>
   );
 };
