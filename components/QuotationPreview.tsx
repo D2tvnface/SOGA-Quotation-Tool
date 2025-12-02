@@ -180,48 +180,49 @@ const QuotationPreview: React.FC<Props> = ({ data }) => {
           </div>
           <div className="border-t border-gray-300 my-2"></div>
           <div className="flex justify-between items-center">
-            <span className="text-lg font-bold text-gray-800">{t.total}:</span>
+            <span className="text-xl font-bold text-gray-800">{t.total}:</span>
             <span className="text-2xl font-bold text-brand">{formatCurrency(totals.total)} VNĐ</span>
           </div>
           <div className="text-right text-xs italic text-gray-500 mt-1">
-            ({t.inWords}: {language === 'en' ? readNumberToWordsEn(totals.total) : readNumberToWords(totals.total)})
+            ({t.inWords}: {language === 'vi' ? readNumberToWords(totals.total) : readNumberToWordsEn(totals.total)})
           </div>
         </div>
       </div>
 
-      {/* Terms & Notes */}
-      <div className="grid grid-cols-1 md:grid-cols-2 print:grid-cols-2 gap-8 mb-12 break-inside-avoid">
-        <div>
-          <h4 className="font-bold text-gray-800 mb-2 uppercase text-sm border-b pb-1">{t.paymentTerms}</h4>
-          <div className="text-sm text-gray-600 whitespace-pre-line">
-            {terms.payment}
+      {/* Group Terms and Signature to avoid split page break */}
+      <div className="break-inside-avoid">
+          {/* Terms & Notes */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+              <div>
+                  <h4 className="font-bold text-gray-800 mb-2 uppercase text-sm border-b pb-1 border-gray-300">{t.paymentTerms}</h4>
+                  <p className="text-sm text-gray-600 whitespace-pre-line leading-relaxed">{terms.payment}</p>
+              </div>
+              <div>
+                  <h4 className="font-bold text-gray-800 mb-2 uppercase text-sm border-b pb-1 border-gray-300">{t.notes}</h4>
+                  <p className="text-sm text-gray-600 whitespace-pre-line leading-relaxed">{terms.notes}</p>
+              </div>
           </div>
-        </div>
-        <div>
-          <h4 className="font-bold text-gray-800 mb-2 uppercase text-sm border-b pb-1">{t.notes}</h4>
-          <div className="text-sm text-gray-600 whitespace-pre-line">
-            {terms.notes}
-          </div>
-        </div>
-      </div>
 
-      {/* Signature */}
-      <div className="flex justify-between items-start mt-12 px-8 break-inside-avoid">
-        <div className="text-center w-1/2">
-          <p className="font-bold text-gray-800 uppercase mb-20">{t.clientRep}</p>
-          <p className="text-sm text-gray-500">{t.signName}</p>
-        </div>
-        <div className="text-center w-1/2">
-          <p className="font-bold text-gray-800 uppercase mb-4">{t.companyRep} {company.name}</p>
-          <div className="h-20 w-32 mx-auto mb-2 flex items-center justify-center text-gray-300 border border-dashed rounded">
-             <span className="text-xs">{t.signSeal}</span>
+          {/* Signature */}
+          <div className="flex justify-between items-start mt-12 px-8">
+              <div className="text-center w-1/2">
+                  <p className="font-bold text-gray-800 mb-20">{t.clientRep}</p>
+                  <p className="text-sm text-gray-500">{t.signName}</p>
+              </div>
+              <div className="text-center w-1/2">
+                  <p className="font-bold text-gray-800 mb-4">{t.companyRep}</p>
+                  {/* Placeholder for Signature Image if needed */}
+                  <div className="h-16 w-32 mx-auto mb-2 flex items-center justify-center text-gray-300 border border-dashed rounded">
+                      {t.signSeal}
+                  </div>
+                  <p className="font-bold text-brand">{t.director}</p>
+                  <p className="font-bold text-brand uppercase">{company.name}</p>
+              </div>
           </div>
-          <p className="font-bold text-brand uppercase">{t.director}</p>
-        </div>
       </div>
 
       {/* Footer Decoration */}
-      <div className="absolute bottom-0 left-0 w-full h-2 bg-gradient-to-r from-red-900 via-red-700 to-red-500 print:fixed print:bottom-0 print:left-0 print:z-50 print:h-2"></div>
+      <div className="absolute bottom-0 left-0 w-full h-2 bg-gradient-to-r from-red-900 via-red-600 to-red-400 print:fixed print:bottom-0"></div>
     </div>
   );
 };
