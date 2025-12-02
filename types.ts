@@ -50,21 +50,3 @@ export interface QuotationData {
   vatRate: number; // Percentage, e.g., 8 or 10
   terms: Terms;
 }
-
-// Database Types
-export interface DBUser {
-  id: string; // The 'sub' from JWT
-  email: string;
-  name?: string;
-  picture?: string;
-}
-
-export interface DBQuotation {
-  id: number;
-  user_id: string; // Owner of the quotation
-  title: string;
-  customer_name: string;
-  data: QuotationData;
-  created_at: string;
-  updated_at: string;
-}
