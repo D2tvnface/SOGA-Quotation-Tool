@@ -103,7 +103,7 @@ function App() {
         </div>
 
         {/* Preview Area */}
-        <div className="flex-1 bg-gray-200 overflow-y-auto h-[calc(100vh-64px)] p-4 md:p-8 print:p-0 print:h-auto print:overflow-visible flex justify-center">
+        <div className="flex-1 bg-gray-200 overflow-y-auto h-[calc(100vh-64px)] p-4 md:p-8 print:bg-white print:p-0 print:h-auto print:overflow-visible flex justify-center">
             <div className="w-full max-w-[210mm] print:w-full print:max-w-none">
                 <QuotationPreview data={data} />
             </div>
