@@ -11,8 +11,13 @@ function App() {
   const [isTranslating, setIsTranslating] = useState(false);
 
   const handleAiTranslate = async () => {
-    // Access API Key using process.env.API_KEY as per Google GenAI guidelines.
-    // Assume process.env.API_KEY is pre-configured and valid.
+    // The API key must be obtained exclusively from the environment variable process.env.API_KEY
+    const apiKey = process.env.API_KEY;
+
+    if (!apiKey) {
+        alert("Lỗi: Chưa cấu hình API_KEY. Vui lòng thêm biến môi trường này.");
+        return;
+    }
     
     if (data.language === 'en') {
         alert("Already in English mode / Đã ở chế độ tiếng Anh.");
@@ -21,7 +26,7 @@ function App() {
 
     setIsTranslating(true);
     try {
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        const ai = new GoogleGenAI({ apiKey: apiKey });
         const prompt = `
         You are a professional business translator. Translate the values of the following JSON object from Vietnamese to English.
         
