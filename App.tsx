@@ -11,11 +11,8 @@ function App() {
   const [isTranslating, setIsTranslating] = useState(false);
 
   const handleAiTranslate = async () => {
-    // Only use the API key from process.env
-    if (!process.env.API_KEY) {
-        alert("API Key not configured in environment!");
-        return;
-    }
+    // Access API Key using process.env.API_KEY as per Google GenAI guidelines.
+    // Assume process.env.API_KEY is pre-configured and valid.
     
     if (data.language === 'en') {
         alert("Already in English mode / Đã ở chế độ tiếng Anh.");
@@ -46,6 +43,9 @@ function App() {
 
         const text = response.text;
         // Clean up markdown if present
+        if (!text) {
+             throw new Error("No text returned from AI");
+        }
         const jsonStr = text.replace(/```json/g, '').replace(/```/g, '').trim();
         const translatedData = JSON.parse(jsonStr);
         
