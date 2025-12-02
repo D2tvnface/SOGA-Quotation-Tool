@@ -49,7 +49,7 @@ const QuotationEditor: React.FC<Props> = ({ data, onChange }) => {
     const newSection: Section = {
       id: generateId(),
       romanIndex: toRoman(data.sections.length + 1),
-      title: 'HẠNG MỤC MỚI',
+      title: data.language === 'en' ? 'NEW CATEGORY' : 'HẠNG MỤC MỚI',
       items: []
     };
     onChange({ ...data, sections: [...data.sections, newSection] });
@@ -70,9 +70,9 @@ const QuotationEditor: React.FC<Props> = ({ data, onChange }) => {
   const addItem = (sectionId: string) => {
     const newItem: LineItem = {
       id: generateId(),
-      name: 'Hạng mục mới',
+      name: data.language === 'en' ? 'New Item' : 'Hạng mục mới',
       description: '',
-      unit: 'Gói',
+      unit: data.language === 'en' ? 'Unit' : 'Gói',
       quantity: 1,
       price: 0
     };
@@ -97,11 +97,10 @@ const QuotationEditor: React.FC<Props> = ({ data, onChange }) => {
   const handleDragStart = (e: React.DragEvent, index: number) => {
     setDraggedIndex(index);
     e.dataTransfer.effectAllowed = "move";
-    // Optional: Set a custom drag image if needed, but default is usually fine
   };
 
   const handleDragOver = (e: React.DragEvent, index: number) => {
-    e.preventDefault(); // Necessary to allow dropping
+    e.preventDefault(); 
     e.dataTransfer.dropEffect = "move";
   };
 
@@ -126,6 +125,19 @@ const QuotationEditor: React.FC<Props> = ({ data, onChange }) => {
   return (
     <div className="bg-white p-6 rounded shadow-md h-full overflow-y-auto border-r border-gray-200">
       <h2 className="text-xl font-bold mb-4 text-brand">Chỉnh sửa thông tin</h2>
+
+      {/* Language */}
+       <div className="mb-6 space-y-3 bg-gray-50 p-3 rounded">
+        <label className="text-sm font-bold text-gray-700 block">Ngôn ngữ hiển thị</label>
+        <select 
+            className="w-full border p-2 rounded text-sm bg-white text-gray-900"
+            value={data.language}
+            onChange={e => onChange({...data, language: e.target.value as 'vi' | 'en'})}
+        >
+            <option value="vi">Tiếng Việt</option>
+            <option value="en">English</option>
+        </select>
+      </div>
 
       {/* General Info */}
       <div className="mb-6 space-y-3">
@@ -236,37 +248,40 @@ const QuotationEditor: React.FC<Props> = ({ data, onChange }) => {
                             />
                             <div className="grid grid-cols-3 gap-2">
                                 <input 
-                                    className="border p-1 text-xs rounded bg-white text-gray-900" 
+                                    className="border p-1 text-xs bg-white text-gray-900 rounded" 
                                     placeholder="ĐVT"
-                                    value={item.unit} 
+                                    value={item.unit}
                                     onChange={e => handleItemChange(section.id, item.id, 'unit', e.target.value)}
                                 />
                                 <input 
                                     type="number"
-                                    className="border p-1 text-xs rounded bg-white text-gray-900" 
+                                    className="border p-1 text-xs bg-white text-gray-900 rounded" 
                                     placeholder="SL"
-                                    value={item.quantity} 
+                                    value={item.quantity}
                                     onChange={e => handleItemChange(section.id, item.id, 'quantity', Number(e.target.value))}
                                 />
                                 <input 
                                     type="number"
-                                    className="border p-1 text-xs rounded bg-white text-gray-900" 
+                                    className="border p-1 text-xs bg-white text-gray-900 rounded" 
                                     placeholder="Đơn giá"
-                                    value={item.price} 
+                                    value={item.price}
                                     onChange={e => handleItemChange(section.id, item.id, 'price', Number(e.target.value))}
                                 />
                             </div>
                         </div>
                         <button 
                             onClick={() => deleteItem(section.id, item.id)}
-                            className="absolute top-1 right-1 text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                            className="absolute top-1 right-1 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
                         >
-                            <i className="fas fa-times-circle"></i>
+                            <i className="fas fa-times"></i>
                         </button>
                     </div>
                 ))}
-                 <button onClick={() => addItem(section.id)} className="text-xs text-brand hover:underline mt-2">
-                    + Thêm hàng
+                <button 
+                    onClick={() => addItem(section.id)}
+                    className="w-full py-1 text-xs text-gray-500 border border-dashed border-gray-300 rounded hover:bg-white hover:text-brand"
+                >
+                    + Thêm hạng mục
                 </button>
             </div>
           </div>
@@ -274,26 +289,27 @@ const QuotationEditor: React.FC<Props> = ({ data, onChange }) => {
       </div>
 
        {/* Terms */}
-       <div className="mb-6 space-y-3">
+       <div className="mb-10 space-y-3">
         <h3 className="font-semibold text-gray-700 border-b pb-1">Điều khoản & Ghi chú</h3>
-        <div className="space-y-1">
-             <label className="text-xs font-bold text-gray-500">Thanh toán</label>
+        <div>
+            <label className="text-xs text-gray-500">Điều khoản thanh toán:</label>
             <textarea 
-            className="w-full border p-2 rounded text-sm h-24 bg-white text-gray-900" 
-            value={data.terms.payment} 
-            onChange={e => onChange({...data, terms: {...data.terms, payment: e.target.value}})}
+                className="w-full border p-2 rounded text-sm bg-white text-gray-900" 
+                rows={4}
+                value={data.terms.payment} 
+                onChange={e => onChange({...data, terms: {...data.terms, payment: e.target.value}})}
             />
         </div>
-        <div className="space-y-1">
-             <label className="text-xs font-bold text-gray-500">Ghi chú</label>
+        <div>
+            <label className="text-xs text-gray-500">Ghi chú:</label>
             <textarea 
-            className="w-full border p-2 rounded text-sm h-24 bg-white text-gray-900" 
-            value={data.terms.notes} 
-            onChange={e => onChange({...data, terms: {...data.terms, notes: e.target.value}})}
+                className="w-full border p-2 rounded text-sm bg-white text-gray-900" 
+                rows={4}
+                value={data.terms.notes} 
+                onChange={e => onChange({...data, terms: {...data.terms, notes: e.target.value}})}
             />
         </div>
       </div>
-
     </div>
   );
 };

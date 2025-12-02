@@ -3,10 +3,61 @@ import QuotationPreview from './components/QuotationPreview';
 import QuotationEditor from './components/QuotationEditor';
 import { INITIAL_DATA } from './constants';
 import { QuotationData } from './types';
+import { GoogleGenAI } from "@google/genai";
 
 function App() {
   const [data, setData] = useState<QuotationData>(INITIAL_DATA);
   const [showEditor, setShowEditor] = useState(true);
+  const [isTranslating, setIsTranslating] = useState(false);
+
+  const handleAiTranslate = async () => {
+    // Only use the API key from process.env
+    if (!process.env.API_KEY) {
+        alert("API Key not configured in environment!");
+        return;
+    }
+    
+    if (data.language === 'en') {
+        alert("Already in English mode / Đã ở chế độ tiếng Anh.");
+        return;
+    }
+
+    setIsTranslating(true);
+    try {
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        const prompt = `
+        You are a professional business translator. Translate the values of the following JSON object from Vietnamese to English.
+        
+        Strict Rules:
+        1. Translate values for these keys ONLY: "name", "description", "unit", "title", "payment", "notes", "projectName".
+        2. DO NOT translate keys, IDs, prices, quantities, dates, or company names/addresses.
+        3. Keep the JSON structure EXACTLY the same.
+        4. Set the "language" field to "en".
+        5. Return ONLY the valid JSON string. No markdown formatting.
+
+        JSON Input:
+        ${JSON.stringify(data)}
+        `;
+
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: prompt
+        });
+
+        const text = response.text;
+        // Clean up markdown if present
+        const jsonStr = text.replace(/```json/g, '').replace(/```/g, '').trim();
+        const translatedData = JSON.parse(jsonStr);
+        
+        setData(translatedData);
+        alert("Translated successfully to English!");
+    } catch (error: any) {
+        console.error("Translation error", error);
+        alert("AI Translation Failed: " + error.message);
+    } finally {
+        setIsTranslating(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -18,6 +69,14 @@ function App() {
              <h1 className="font-bold text-lg hidden sm:block">SOGA Quotation Tool</h1>
           </div>
           <div className="flex gap-3">
+            <button 
+                onClick={handleAiTranslate}
+                disabled={isTranslating}
+                className={`bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded text-sm transition flex items-center gap-2 ${isTranslating ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+                {isTranslating ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-language"></i>}
+                {isTranslating ? 'Đang dịch...' : 'Dịch sang Anh (AI)'}
+            </button>
             <button 
                 onClick={() => setShowEditor(!showEditor)}
                 className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded text-sm transition flex items-center gap-2"

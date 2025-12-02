@@ -16,7 +16,8 @@ export interface Section {
 
 export interface CompanyInfo {
   name: string;
-  address: string;
+  address: string; // Registered Address
+  officeAddress: string; // New Office Address
   phone: string;
   email: string;
   taxId: string;
@@ -41,6 +42,7 @@ export interface Terms {
 }
 
 export interface QuotationData {
+  language: 'vi' | 'en';
   company: CompanyInfo;
   customer: CustomerInfo;
   meta: MetaInfo;

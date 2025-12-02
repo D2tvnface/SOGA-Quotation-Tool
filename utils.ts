@@ -99,3 +99,37 @@ export const readNumberToWords = (number: number): string => {
     
     return ketqua + " đồng chẵn";
 };
+
+// Simple English Number Reader
+export const readNumberToWordsEn = (n: number): string => {
+    if (n < 0) return "Minus " + readNumberToWordsEn(-n);
+    if (n === 0) return "Zero VND";
+    
+    const a = ['', 'one ', 'two ', 'three ', 'four ', 'five ', 'six ', 'seven ', 'eight ', 'nine ', 'ten ', 'eleven ', 'twelve ', 'thirteen ', 'fourteen ', 'fifteen ', 'sixteen ', 'seventeen ', 'eighteen ', 'nineteen '];
+    const b = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+
+    const num = ('000000000' + n).slice(-9); // support up to 999 million for simplicity in this context
+    
+    // Recursive function for groups of 3
+    const convertGroup = (n: number): string => {
+        if(n === 0) return '';
+        if(n < 20) return a[n];
+        if(n < 100) return b[Math.floor(n / 10)] + (n % 10 ? '-' + a[n % 10] : ' ');
+        return a[Math.floor(n / 100)] + 'hundred ' + (n % 100 === 0 ? '' : 'and ' + convertGroup(n % 100));
+    }
+    
+    let str = "";
+    
+    // Billions (Support up to trillion if needed but basic implementation here)
+    if(n >= 1000000000) return "Amount is too large for auto-read"; 
+
+    const millions = Math.floor(n / 1000000);
+    const thousands = Math.floor((n % 1000000) / 1000);
+    const units = Math.floor(n % 1000);
+
+    if (millions > 0) str += convertGroup(millions) + "million ";
+    if (thousands > 0) str += convertGroup(thousands) + "thousand ";
+    if (units > 0) str += convertGroup(units);
+
+    return str.trim() + " VND only";
+}

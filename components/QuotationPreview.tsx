@@ -1,13 +1,73 @@
 import React, { useMemo } from 'react';
 import { QuotationData } from '../types';
-import { formatCurrency, readNumberToWords } from '../utils';
+import { formatCurrency, readNumberToWords, readNumberToWordsEn } from '../utils';
 
 interface Props {
   data: QuotationData;
 }
 
+const DICTIONARY = {
+  vi: {
+    title: 'Báo Giá',
+    number: 'Số',
+    date: 'Ngày',
+    validity: 'Hiệu lực',
+    days: 'ngày',
+    customer: 'Khách hàng',
+    contact: 'Người liên hệ',
+    project: 'Dự án',
+    stt: 'STT',
+    itemDesc: 'Hạng mục / Mô tả',
+    unit: 'ĐVT',
+    qty: 'SL',
+    price: 'Đơn giá',
+    amount: 'Thành tiền',
+    subtotal: 'Cộng tiền hàng',
+    vat: 'Thuế VAT',
+    total: 'TỔNG CỘNG',
+    inWords: 'Bằng chữ',
+    paymentTerms: 'Điều khoản thanh toán',
+    notes: 'Ghi chú',
+    clientRep: 'ĐẠI DIỆN KHÁCH HÀNG',
+    signName: '(Ký, ghi rõ họ tên)',
+    companyRep: 'ĐẠI DIỆN',
+    signSeal: 'Chữ ký / Dấu',
+    director: 'GIÁM ĐỐC',
+    mission: '"Sứ mệnh của chúng tôi là đánh thức tiềm năng ẩn giấu trong mỗi website. Với kinh nghiệm và công nghệ, chúng tôi biến tài sản số thành cỗ máy sinh lời."'
+  },
+  en: {
+    title: 'Quotation',
+    number: 'No.',
+    date: 'Date',
+    validity: 'Validity',
+    days: 'days',
+    customer: 'Customer',
+    contact: 'Contact Person',
+    project: 'Project',
+    stt: 'No.',
+    itemDesc: 'Item / Description',
+    unit: 'Unit',
+    qty: 'Qty',
+    price: 'Unit Price',
+    amount: 'Amount',
+    subtotal: 'Subtotal',
+    vat: 'VAT',
+    total: 'TOTAL',
+    inWords: 'In words',
+    paymentTerms: 'Payment Terms',
+    notes: 'Notes',
+    clientRep: 'CLIENT REPRESENTATIVE',
+    signName: '(Sign & Full Name)',
+    companyRep: 'REPRESENTATIVE',
+    signSeal: 'Signature / Seal',
+    director: 'DIRECTOR',
+    mission: '"Our mission is to awaken the hidden potential in every website. With experience and technology, we turn digital assets into profit-generating machines."'
+  }
+};
+
 const QuotationPreview: React.FC<Props> = ({ data }) => {
-  const { company, customer, meta, sections, vatRate, terms } = data;
+  const { company, customer, meta, sections, vatRate, terms, language } = data;
+  const t = DICTIONARY[language];
 
   const totals = useMemo(() => {
     let subtotal = 0;
@@ -30,11 +90,14 @@ const QuotationPreview: React.FC<Props> = ({ data }) => {
           <img src={company.logoUrl} alt="Company Logo" className="h-16 mb-4 object-contain" />
           <h1 className="text-xl font-bold text-gray-800 uppercase">{company.name}</h1>
           <p className="text-xs text-gray-500 mt-2 italic pr-4">
-            "Sứ mệnh của chúng tôi là đánh thức tiềm năng ẩn giấu trong mỗi website. Với kinh nghiệm và công nghệ, chúng tôi biến tài sản số thành cỗ máy sinh lời."
+            {t.mission}
           </p>
           
           <div className="mt-4 text-xs text-gray-600 space-y-1">
             <p><i className="fas fa-map-marker-alt w-5 text-center inline-block"></i> {company.address}</p>
+            {company.officeAddress && (
+                 <p><i className="fas fa-building w-5 text-center inline-block"></i> {company.officeAddress}</p>
+            )}
             <p><i className="fas fa-phone w-5 text-center inline-block"></i> {company.phone}</p>
             <p><i className="fas fa-envelope w-5 text-center inline-block"></i> {company.email}</p>
             <p><i className="fas fa-id-card w-5 text-center inline-block"></i> MST: {company.taxId}</p>
@@ -42,18 +105,18 @@ const QuotationPreview: React.FC<Props> = ({ data }) => {
         </div>
         
         <div className="w-full md:w-1/2 text-right">
-          <h2 className="text-4xl font-bold text-gray-200 uppercase tracking-widest mb-2">Báo Giá</h2>
+          <h2 className="text-4xl font-bold text-gray-200 uppercase tracking-widest mb-2">{t.title}</h2>
           <div className="text-sm">
-            <p className="mb-1"><span className="font-bold text-gray-700">Số:</span> {meta.quoteNumber}</p>
-            <p className="mb-1"><span className="font-bold text-gray-700">Ngày:</span> {meta.date}</p>
-            <p className="mb-1"><span className="font-bold text-gray-700">Hiệu lực:</span> {meta.validityDays} ngày</p>
+            <p className="mb-1"><span className="font-bold text-gray-700">{t.number}:</span> {meta.quoteNumber}</p>
+            <p className="mb-1"><span className="font-bold text-gray-700">{t.date}:</span> {meta.date}</p>
+            <p className="mb-1"><span className="font-bold text-gray-700">{t.validity}:</span> {meta.validityDays} {t.days}</p>
           </div>
           
           <div className="mt-6 bg-gray-50 p-4 rounded text-left border-l-4 border-brand">
-            <p className="text-xs text-gray-500 uppercase font-bold mb-1">Khách hàng</p>
+            <p className="text-xs text-gray-500 uppercase font-bold mb-1">{t.customer}</p>
             <h3 className="text-lg font-bold text-brand">{customer.companyName}</h3>
-            <p className="text-gray-700 text-sm">Người liên hệ: <span className="font-medium">{customer.contactPerson}</span></p>
-            <p className="text-gray-700 text-sm">Dự án: <span className="font-medium">{customer.projectName}</span></p>
+            <p className="text-gray-700 text-sm">{t.contact}: <span className="font-medium">{customer.contactPerson}</span></p>
+            <p className="text-gray-700 text-sm">{t.project}: <span className="font-medium">{customer.projectName}</span></p>
           </div>
         </div>
       </div>
@@ -63,12 +126,12 @@ const QuotationPreview: React.FC<Props> = ({ data }) => {
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-gray-800 text-white text-sm uppercase">
-              <th className="py-3 px-2 text-center rounded-tl-lg w-12">STT</th>
-              <th className="py-3 px-4 text-left">Hạng mục / Mô tả</th>
-              <th className="py-3 px-2 text-center w-20">ĐVT</th>
-              <th className="py-3 px-2 text-center w-16">SL</th>
-              <th className="py-3 px-4 text-right w-32">Đơn giá</th>
-              <th className="py-3 px-4 text-right rounded-tr-lg w-32">Thành tiền</th>
+              <th className="py-3 px-2 text-center rounded-tl-lg w-12">{t.stt}</th>
+              <th className="py-3 px-4 text-left">{t.itemDesc}</th>
+              <th className="py-3 px-2 text-center w-20">{t.unit}</th>
+              <th className="py-3 px-2 text-center w-16">{t.qty}</th>
+              <th className="py-3 px-4 text-right w-32">{t.price}</th>
+              <th className="py-3 px-4 text-right rounded-tr-lg w-32">{t.amount}</th>
             </tr>
           </thead>
           <tbody className="text-gray-700 text-sm">
@@ -110,20 +173,20 @@ const QuotationPreview: React.FC<Props> = ({ data }) => {
       <div className="flex justify-end mb-10 break-inside-avoid">
         <div className="w-full md:w-2/3 lg:w-1/2">
           <div className="flex justify-between mb-2 text-gray-600 text-sm">
-            <span>Cộng tiền hàng:</span>
+            <span>{t.subtotal}:</span>
             <span className="font-medium">{formatCurrency(totals.subtotal)} VNĐ</span>
           </div>
           <div className="flex justify-between mb-2 text-gray-600 text-sm">
-            <span>Thuế VAT ({vatRate}%):</span>
+            <span>{t.vat} ({vatRate}%):</span>
             <span className="font-medium">{formatCurrency(totals.vatAmount)} VNĐ</span>
           </div>
           <div className="border-t border-gray-300 my-2"></div>
           <div className="flex justify-between items-center">
-            <span className="text-lg font-bold text-gray-800">TỔNG CỘNG:</span>
+            <span className="text-lg font-bold text-gray-800">{t.total}:</span>
             <span className="text-2xl font-bold text-brand">{formatCurrency(totals.total)} VNĐ</span>
           </div>
           <div className="text-right text-xs italic text-gray-500 mt-1">
-            (Bằng chữ: {readNumberToWords(totals.total)})
+            ({t.inWords}: {language === 'en' ? readNumberToWordsEn(totals.total) : readNumberToWords(totals.total)})
           </div>
         </div>
       </div>
@@ -131,13 +194,13 @@ const QuotationPreview: React.FC<Props> = ({ data }) => {
       {/* Terms & Notes */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 break-inside-avoid">
         <div>
-          <h4 className="font-bold text-gray-800 mb-2 uppercase text-sm border-b pb-1">Điều khoản thanh toán</h4>
+          <h4 className="font-bold text-gray-800 mb-2 uppercase text-sm border-b pb-1">{t.paymentTerms}</h4>
           <div className="text-sm text-gray-600 whitespace-pre-line">
             {terms.payment}
           </div>
         </div>
         <div>
-          <h4 className="font-bold text-gray-800 mb-2 uppercase text-sm border-b pb-1">Ghi chú</h4>
+          <h4 className="font-bold text-gray-800 mb-2 uppercase text-sm border-b pb-1">{t.notes}</h4>
           <div className="text-sm text-gray-600 whitespace-pre-line">
             {terms.notes}
           </div>
@@ -147,15 +210,15 @@ const QuotationPreview: React.FC<Props> = ({ data }) => {
       {/* Signature */}
       <div className="flex justify-between items-end mt-12 px-8 break-inside-avoid">
         <div className="text-center">
-          <p className="font-bold text-gray-800 mb-20">ĐẠI DIỆN KHÁCH HÀNG</p>
-          <p className="text-sm text-gray-500">(Ký, ghi rõ họ tên)</p>
+          <p className="font-bold text-gray-800 mb-20">{t.clientRep}</p>
+          <p className="text-sm text-gray-500">{t.signName}</p>
         </div>
         <div className="text-center">
-          <p className="font-bold text-gray-800 mb-4">ĐẠI DIỆN {company.name}</p>
+          <p className="font-bold text-gray-800 mb-4">{t.companyRep} {company.name}</p>
           <div className="h-20 w-32 mx-auto mb-2 flex items-center justify-center text-gray-300 border border-dashed rounded">
-             <span className="text-xs">Chữ ký / Dấu</span>
+             <span className="text-xs">{t.signSeal}</span>
           </div>
-          <p className="font-bold text-brand uppercase">GIÁM ĐỐC</p>
+          <p className="font-bold text-brand uppercase">{t.director}</p>
         </div>
       </div>
 

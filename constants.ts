@@ -89,9 +89,11 @@ export const INITIAL_SECTIONS: Section[] = [
 ];
 
 export const INITIAL_DATA: QuotationData = {
+  language: 'vi',
   company: {
     name: 'CÔNG TY CỔ PHẦN SOGA',
     address: 'Tầng 4, 245 Lê Thánh Tôn, Phường Bến Thành, TP.HCM',
+    officeAddress: '174-176 Đường số 1, P. An Lạc, TP. HCM',
     phone: '028.77759.888',
     email: 'info@soga.com.vn',
     taxId: '0312592175',
