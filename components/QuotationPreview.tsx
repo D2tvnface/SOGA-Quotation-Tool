@@ -82,7 +82,7 @@ const QuotationPreview: React.FC<Props> = ({ data }) => {
   }, [sections, vatRate]);
 
   return (
-    <div className="max-w-[210mm] mx-auto bg-white p-8 md:p-12 shadow-lg rounded-lg relative overflow-hidden print:overflow-visible print:shadow-none print:rounded-none print-container min-h-[297mm]">
+    <div className="max-w-[210mm] mx-auto bg-white p-8 md:p-12 shadow-lg rounded-lg relative overflow-hidden print:overflow-visible print:shadow-none print:rounded-none print-container print:p-0 print:px-[15mm] print:pb-[10mm]">
       
       {/* Header */}
       <div className="flex flex-col md:flex-row print:flex-row justify-between items-start mb-8 border-b-2 border-gray-200 pb-6">
@@ -223,7 +223,7 @@ const QuotationPreview: React.FC<Props> = ({ data }) => {
       </div>
 
       {/* Footer Decoration */}
-      <div className="absolute bottom-0 left-0 w-full h-2 bg-gradient-to-r from-red-900 via-red-700 to-red-500 print:bg-red-700"></div>
+      <div className="absolute bottom-0 left-0 w-full h-2 bg-gradient-to-r from-red-900 via-red-700 to-red-500 print:fixed print:bottom-0 print:left-0 print:z-50 print:h-2"></div>
     </div>
   );
 };
